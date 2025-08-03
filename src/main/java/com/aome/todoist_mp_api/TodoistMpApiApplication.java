@@ -1,12 +1,11 @@
 package com.aome.todoist_mp_api;
 
-import com.aome.todoist_mp_api.config.JwtProperties;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 
 @SpringBootApplication
-@EnableConfigurationProperties(JwtProperties.class)
+@ConfigurationPropertiesScan(basePackages = "com.aome.todoist_mp_api.config")
 public class TodoistMpApiApplication {
 
     public static void main(String[] args) {

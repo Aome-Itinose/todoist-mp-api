@@ -1,11 +1,10 @@
-package com.aome.todoist_mp_api.models;
+package com.aome.todoist_mp_api.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.validation.constraints.NotNull;
+import org.jetbrains.annotations.NotNull;
 
 import java.time.OffsetDateTime;
-import java.util.Objects;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public record TaskDto(
@@ -23,10 +22,4 @@ public record TaskDto(
 
         @JsonProperty("completed_at")
         OffsetDateTime completedAt
-) {
-    public TaskDto {
-        Objects.requireNonNull(id);
-        Objects.requireNonNull(userId);
-        Objects.requireNonNull(content);
-    }
-}
+) {}

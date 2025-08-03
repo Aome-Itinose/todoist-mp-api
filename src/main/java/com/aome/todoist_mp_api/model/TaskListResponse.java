@@ -1,4 +1,4 @@
-package com.aome.todoist_mp_api.models;
+package com.aome.todoist_mp_api.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
