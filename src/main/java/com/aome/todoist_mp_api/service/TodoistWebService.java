@@ -1,5 +1,7 @@
 package com.aome.todoist_mp_api.service;
 
+import com.aome.todoist_mp_api.model.TaskDto;
+import com.aome.todoist_mp_api.model.TaskListDto;
 import com.aome.todoist_mp_api.model.TodoistUserDto;
 import com.aome.todoist_mp_api.util.Urls;
 import com.aome.todoist_mp_api.validation.Validator;
@@ -12,6 +14,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -21,12 +30,12 @@ public class TodoistWebService implements TheirService {
 
     @Override
     public TodoistUserDto loadUser() {
-        log.info("Loading Todoist user from URL: {}", Urls.USER_ARI_URL);
+        log.info("Loading Todoist user from URL: {}", Urls.USER);
         ResponseEntity<TodoistUserDto> response;
 
         try {
             response = restTemplate.exchange(
-                    Urls.USER_ARI_URL,
+                    Urls.USER,
                     HttpMethod.GET,
                     null,
                     new ParameterizedTypeReference<>() {}
@@ -44,5 +53,27 @@ public class TodoistWebService implements TheirService {
         validator.validate(response);
 
         return response.getBody();
+    }
+
+    @Override
+    public List<TaskDto> loadCompletedTasks(OffsetDateTime start, OffsetDateTime end) {
+        DateTimeFormatter formatter = DateTimeFormatter.ISO_INSTANT;
+        String since = start.format(formatter);
+        String until = end.format(formatter);
+
+        String url = Urls.TASK_BY_COMPLETION_DATE.formatted(since, until);
+
+        ResponseEntity<TaskListDto> response;
+        try {
+            response = restTemplate.getForEntity(
+                    url,
+                    TaskListDto.class
+            );
+        } catch (HttpClientErrorException e) {
+            response = ResponseEntity.status(e.getStatusCode()).body(null);
+        }
+
+        validator.validate(response);
+        return response.getBody().tasks();
     }
 }

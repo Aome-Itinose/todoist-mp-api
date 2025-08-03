@@ -1,8 +1,8 @@
-package com.aome.todoist_mp_api.service;
+package com.aome.todoist_mp_api.store.service;
 
 import com.aome.todoist_mp_api.exception.TaskerNotFoundException;
 import com.aome.todoist_mp_api.exception.TaskerNotSaveException;
-import com.aome.todoist_mp_api.model.Tasker;
+import com.aome.todoist_mp_api.model.TaskerEntity;
 import com.aome.todoist_mp_api.store.repository.TaskerRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,12 +16,12 @@ public class TaskerServiceImpl implements TaskerService {
     private final TaskerRepository repository;
 
     @Override
-    public @NotNull Tasker save(@NotNull Tasker tasker) {
-        log.info("Saving tasker with Telegram token: {} and Todoist ID: {}", 
+    public @NotNull TaskerEntity save(@NotNull TaskerEntity tasker) {
+        log.info("Saving tasker with Telegram token: {} and Todoist ID: {}",
                 maskToken(tasker.telegramToken()), tasker.todoistId());
-        
+
         try {
-            Tasker savedTasker = repository.save(tasker);
+            TaskerEntity savedTasker = repository.save(tasker);
             log.info("Tasker saved successfully with ID: {}", savedTasker.id());
             return savedTasker;
         } catch (IllegalStateException e) {
@@ -31,13 +31,28 @@ public class TaskerServiceImpl implements TaskerService {
     }
 
     @Override
-    public @NotNull Tasker findByTelegramToken(@NotNull String telegramToken) {
+    public @NotNull TaskerEntity update(@NotNull TaskerEntity tasker) {
+        log.info("Updating tasker with ID: {} and Telegram token: {}",
+                tasker.id(), maskToken(tasker.telegramToken()));
+
+        try {
+            TaskerEntity updatedTasker = repository.update(tasker);
+            log.info("Tasker updated successfully with ID: {}", updatedTasker.id());
+            return updatedTasker;
+        } catch (IllegalStateException e) {
+            log.error("Failed to update tasker: {}", e.getMessage(), e);
+            throw TaskerNotSaveException.taskerNotSave(e);
+        }
+    }
+
+    @Override
+    public @NotNull TaskerEntity findByTelegramToken(@NotNull String telegramToken) {
         log.debug("Finding tasker by Telegram token: {}", maskToken(telegramToken));
-        
-        Tasker tasker = repository.findByTelegramToken(telegramToken)
+
+        TaskerEntity tasker = repository.findByTelegramToken(telegramToken)
                 .orElseThrow(TaskerNotFoundException::taskerNotFound);
-        
-        log.debug("Found tasker with ID: {} for Telegram token: {}", 
+
+        log.debug("Found tasker with ID: {} for Telegram token: {}",
                 tasker.id(), maskToken(telegramToken));
         return tasker;
     }
@@ -60,7 +75,7 @@ public class TaskerServiceImpl implements TaskerService {
 
     @Override
     public boolean existByTelegramAndTodoistToken(@NotNull String telegramToken, @NotNull String todoistToken) {
-        log.debug("Checking existence by Telegram token: {} and Todoist token: {}", 
+        log.debug("Checking existence by Telegram token: {} and Todoist token: {}",
                 maskToken(telegramToken), maskToken(todoistToken));
         boolean exists = repository.existByTelegramAndTodoistToken(telegramToken, todoistToken);
         log.debug("Combination of tokens exists: {}", exists);

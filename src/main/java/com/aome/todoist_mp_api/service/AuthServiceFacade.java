@@ -1,8 +1,9 @@
 package com.aome.todoist_mp_api.service;
 
 import com.aome.todoist_mp_api.model.RegistrationRequest;
-import com.aome.todoist_mp_api.model.Tasker;
+import com.aome.todoist_mp_api.model.TaskerEntity;
 import com.aome.todoist_mp_api.model.TodoistUserDto;
+import com.aome.todoist_mp_api.store.service.TaskerService;
 import com.aome.todoist_mp_api.util.SecurityContextHandler;
 import com.aome.todoist_mp_api.validation.Validator;
 import lombok.RequiredArgsConstructor;
@@ -19,21 +20,21 @@ public class AuthServiceFacade implements AuthService {
     private final Validator validator;
 
     public String registration(RegistrationRequest registrationRequest) {
-        log.info("Starting registration process for Telegram token: {}", 
+        log.info("Starting registration process for Telegram token: {}",
                 maskToken(registrationRequest.telegramToken()));
-        
+
         validator.validate(registrationRequest);
         log.debug("Registration request validation passed");
-        
-        Tasker newTasker = new Tasker(
+
+        TaskerEntity newTasker = new TaskerEntity(
                 registrationRequest.todoistToken(),
                 registrationRequest.telegramToken()
         );
         log.debug("Created new Tasker instance");
-        
+
         SecurityContextHandler.setAuthentication(newTasker);
         log.debug("Set authentication context");
-        
+
         TodoistUserDto todoistUser = theirService.loadUser();
         log.info("Loaded Todoist user: {} (ID: {})", todoistUser.username(), todoistUser.id());
 
@@ -44,7 +45,7 @@ public class AuthServiceFacade implements AuthService {
 
         newTasker = taskerService.save(newTasker);
         log.info("Tasker saved successfully with ID: {}", newTasker.id());
-        
+
         return newTasker.todoistUsername();
     }
 

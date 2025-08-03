@@ -1,8 +1,8 @@
 package com.aome.todoist_mp_api.config;
 
 import com.aome.todoist_mp_api.exception.TaskerNotFoundException;
-import com.aome.todoist_mp_api.model.Tasker;
-import com.aome.todoist_mp_api.service.TaskerService;
+import com.aome.todoist_mp_api.model.TaskerEntity;
+import com.aome.todoist_mp_api.store.service.TaskerService;
 import com.aome.todoist_mp_api.util.SecurityContextHandler;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import jakarta.servlet.FilterChain;
@@ -58,7 +58,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
     }
 
     private void authenticateTasker(String telegramToken) throws IOException {
-        Tasker tasker = taskerService.findByTelegramToken(telegramToken);
+        TaskerEntity tasker = taskerService.findByTelegramToken(telegramToken);
         SecurityContextHandler.setAuthentication(tasker);
         log.debug("Security context set for user: {}", tasker.todoistUsername());
     }

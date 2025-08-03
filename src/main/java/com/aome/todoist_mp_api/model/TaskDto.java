@@ -9,10 +9,10 @@ import java.time.OffsetDateTime;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public record TaskDto(
         @JsonProperty("id")
-        @NotNull String id,
+        @NotNull Long id,
 
         @JsonProperty("user_id")
-        @NotNull String userId,
+        @NotNull Long userId,
 
         @JsonProperty("content")
         @NotNull String content,

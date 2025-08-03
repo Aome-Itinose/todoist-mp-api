@@ -1,6 +1,6 @@
 package com.aome.todoist_mp_api.util;
 
-import com.aome.todoist_mp_api.model.Tasker;
+import com.aome.todoist_mp_api.model.TaskerEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,11 +17,11 @@ public class SecurityContextHandler {
         return authenticatedUser().todoistToken();
     }
 
-    public static Tasker authenticatedUser() {
-        return (Tasker) authentication().getPrincipal();
+    public static TaskerEntity authenticatedUser() {
+        return (TaskerEntity) authentication().getPrincipal();
     }
 
-    public static void setAuthentication(Tasker tasker) {
+    public static void setAuthentication(TaskerEntity tasker) {
         SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(tasker, null, List.of()));
     }
 }
