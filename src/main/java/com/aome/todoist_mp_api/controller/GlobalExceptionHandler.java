@@ -1,7 +1,7 @@
 package com.aome.todoist_mp_api.controller;
 
 import com.aome.todoist_mp_api.exception.PreconditionFailure;
-import com.aome.todoist_mp_api.exception.UserFriendlyException;
+import com.aome.todoist_mp_api.exception.ClientFriendlyException;
 import com.aome.todoist_mp_api.model.HttpResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -21,12 +21,12 @@ public class GlobalExceptionHandler {
                 .body(new HttpResponse(preconditionFailure));
     }
 
-    @ExceptionHandler(UserFriendlyException.class)
-    public ResponseEntity<HttpResponse> handleUserFriendlyException(UserFriendlyException userFriendlyException) {
-        log.error("User-friendly exception occurred: {}", userFriendlyException.getMessage(), userFriendlyException);
+    @ExceptionHandler(ClientFriendlyException.class)
+    public ResponseEntity<HttpResponse> handleClientFriendlyException(ClientFriendlyException clientFriendlyException) {
+        log.error("User-friendly exception occurred: {}", clientFriendlyException.getMessage(), clientFriendlyException);
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(new HttpResponse(userFriendlyException.getMessage(), HttpResponse.StatusCode.INTERNAL));
+                .body(new HttpResponse(clientFriendlyException.getMessage(), HttpResponse.StatusCode.INTERNAL));
     }
 
     @ExceptionHandler(Exception.class)
@@ -34,6 +34,6 @@ public class GlobalExceptionHandler {
         log.error("Unexpected exception occurred: {}", exception.getMessage(), exception);
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(new HttpResponse("An unexpected error occurred", null));
+                .body(new HttpResponse("An unexpected error occurred", HttpResponse.StatusCode.INTERNAL));
     }
 }

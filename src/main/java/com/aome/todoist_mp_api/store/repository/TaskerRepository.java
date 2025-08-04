@@ -8,7 +8,7 @@ import java.util.Optional;
 public interface TaskerRepository {
     @NotNull TaskerEntity save(@NotNull TaskerEntity tasker);
     @NotNull TaskerEntity update(@NotNull TaskerEntity tasker);
-    Optional<TaskerEntity> findByTelegramToken(@NotNull String telegramToken);
+    @NotNull TaskerEntity findByTelegramToken(@NotNull String telegramToken);
 
     boolean existByTodoistToken(@NotNull String todoistToken);
     boolean existByTelegramToken(@NotNull String telegramToken);

@@ -1,11 +1,15 @@
 package com.aome.todoist_mp_api.exception;
 
-public class TaskerNotSaveException extends UserFriendlyException {
+public class TaskerNotSaveException extends ClientFriendlyException {
     private TaskerNotSaveException(String message) {
         super(message);
     }
 
-    public static TaskerNotSaveException taskerNotSave(Throwable cause) {
-        return new TaskerNotSaveException("Tasker not saved. Cause: " + cause.getMessage());
+    private TaskerNotSaveException(Exception cause) {
+        super(cause);
+    }
+
+    public static TaskerNotSaveException taskerNotSave(Exception cause) {
+        return new TaskerNotSaveException(cause);
     }
 }

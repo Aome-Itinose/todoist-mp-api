@@ -27,7 +27,6 @@ public class TodoistWebService implements TheirService {
 
     @Override
     public TodoistUserDto loadUser() {
-        log.info("Loading Todoist user from URL: {}", Urls.USER);
         ResponseEntity<TodoistUserDto> response;
 
         try {
@@ -37,16 +36,9 @@ public class TodoistWebService implements TheirService {
                     null,
                     new ParameterizedTypeReference<>() {}
             );
-            log.debug("Received response with status: {}", response.getStatusCode());
         } catch (HttpClientErrorException e) {
-            log.error("HTTP client error occurred while loading Todoist user: {} - {}",
-                    e.getStatusCode(), e.getMessage(), e);
             response = ResponseEntity.status(e.getStatusCode()).body(null);
-        } catch (Exception e) {
-            log.error("Unexpected error occurred while loading Todoist user: {}", e.getMessage(), e);
-            throw e;
         }
-
         validator.validate(response);
 
         return response.getBody();

@@ -1,6 +1,6 @@
 package com.aome.todoist_mp_api.exception;
 
-public class TodoistRequestFailure extends UserFriendlyException {
+public class TodoistRequestFailure extends RuntimeException {
     private TodoistRequestFailure(String message) {
         super(message);
     }

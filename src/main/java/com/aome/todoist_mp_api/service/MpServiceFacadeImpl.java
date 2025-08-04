@@ -1,12 +1,13 @@
 package com.aome.todoist_mp_api.service;
 
+import com.aome.todoist_mp_api.exception.MpTransactionNotFoundException;
 import com.aome.todoist_mp_api.exception.PreconditionFailure;
 import com.aome.todoist_mp_api.model.MpTransactionEntity;
 import com.aome.todoist_mp_api.model.RewardEntity;
-import com.aome.todoist_mp_api.model.dto.ReduceRequest;
-import com.aome.todoist_mp_api.model.dto.TaskDto;
 import com.aome.todoist_mp_api.model.TaskEntity;
 import com.aome.todoist_mp_api.model.TaskerEntity;
+import com.aome.todoist_mp_api.model.dto.ReduceRequest;
+import com.aome.todoist_mp_api.model.dto.TaskDto;
 import com.aome.todoist_mp_api.store.service.MpTransactionService;
 import com.aome.todoist_mp_api.store.service.RewardService;
 import com.aome.todoist_mp_api.store.service.TaskService;
@@ -89,7 +90,12 @@ public class MpServiceFacadeImpl implements MpServiceFacade {
     }
 
     private OffsetDateTime lastUpdatedOrDefault() {
-        OffsetDateTime offsetDateTime = mpTransactionService.getLastCreatedTimestamp();
+        OffsetDateTime offsetDateTime = null;
+        try {
+            offsetDateTime = mpTransactionService.getLastCreatedTimestamp();
+        } catch (MpTransactionNotFoundException e) {
+            log.info("MpTransaction not found, using default last update time");
+        }
         // Default to 30 days ago if no last update found
         return Objects.requireNonNullElseGet(offsetDateTime, () -> OffsetDateTime.now().minusDays(30)).plusSeconds(1);
     }

@@ -4,7 +4,7 @@ import com.aome.todoist_mp_api.model.HttpResponse;
 import lombok.Getter;
 
 @Getter
-public class PreconditionFailure extends UserFriendlyException {
+public class PreconditionFailure extends ClientFriendlyException {
     private final HttpResponse.StatusCode errorCode;
 
     private PreconditionFailure(String message, HttpResponse.StatusCode errorCode) {
@@ -12,11 +12,11 @@ public class PreconditionFailure extends UserFriendlyException {
         this.errorCode = errorCode;
     }
 
-    public static PreconditionFailure invalidTelegramToken(){
+    public static PreconditionFailure invalidTelegramToken() {
         return new PreconditionFailure("Invalid telegram token.", HttpResponse.StatusCode.INVALID_TELEGRAM_TOKEN);
     }
 
-    public static PreconditionFailure invalidTodoistToken(){
+    public static PreconditionFailure invalidTodoistToken() {
         return new PreconditionFailure("Invalid todoist token.", HttpResponse.StatusCode.INVALID_TODOIST_TOKEN);
     }
 
@@ -24,7 +24,7 @@ public class PreconditionFailure extends UserFriendlyException {
         return new PreconditionFailure("Telegram token already exist.", HttpResponse.StatusCode.EXISTED_TELEGRAM_TOKEN);
     }
 
-    public static PreconditionFailure existedTodoistToken(){
+    public static PreconditionFailure existedTodoistToken() {
         return new PreconditionFailure("Todoist token already exist.", HttpResponse.StatusCode.EXISTED_TODOIST_TOKEN);
     }
 

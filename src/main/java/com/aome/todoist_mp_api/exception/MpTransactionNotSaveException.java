@@ -1,8 +1,12 @@
 package com.aome.todoist_mp_api.exception;
 
-public class MpTransactionNotSaveException extends UserFriendlyException {
+public class MpTransactionNotSaveException extends ClientFriendlyException {
     public MpTransactionNotSaveException(String message) {
         super(message);
+    }
+
+    public MpTransactionNotSaveException(Exception e) {
+        super(e);
     }
 
     public static MpTransactionNotSaveException create() {
@@ -10,6 +14,6 @@ public class MpTransactionNotSaveException extends UserFriendlyException {
     }
 
     public static MpTransactionNotSaveException create(Exception ex) {
-        return new MpTransactionNotSaveException("Mp transaction not saved: " + ex.getMessage());
+        return new MpTransactionNotSaveException(ex);
     }
 }

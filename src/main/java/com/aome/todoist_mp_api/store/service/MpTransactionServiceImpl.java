@@ -10,7 +10,6 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.time.OffsetDateTime;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -20,8 +19,7 @@ public class MpTransactionServiceImpl implements MpTransactionService {
     @Override
     public OffsetDateTime getLastCreatedTimestamp() {
         try {
-            Optional<MpTransactionEntity> maybeEntity = transactionRepository.findLastCreated();
-            return maybeEntity.map(MpTransactionEntity::timestamp).orElse(null);
+            return transactionRepository.findLastCreated().timestamp();
         }catch (DataAccessException ex) {
             throw MpTransactionNotFoundException.create(ex);
         }
