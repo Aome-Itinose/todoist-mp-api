@@ -6,14 +6,6 @@ public class ClientFriendlyException extends RuntimeException {
     }
 
     protected ClientFriendlyException(Exception cause) {
-        super(cause);
-    }
-
-    protected ClientFriendlyException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    protected ClientFriendlyException(Throwable cause) {
-        super(cause);
+        super(cause.getMessage(), cause);
     }
 }

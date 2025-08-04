@@ -1,6 +1,7 @@
 package com.aome.todoist_mp_api.store.repository;
 
 import com.aome.todoist_mp_api.model.TaskerEntity;
+import com.aome.todoist_mp_api.converter.TaskerEntityRowMapper;
 import lombok.RequiredArgsConstructor;
 import org.intellij.lang.annotations.Language;
 import org.jetbrains.annotations.NotNull;
@@ -39,7 +40,7 @@ public class TaskerRepositoryImpl implements TaskerRepository {
         @Language("SQL") String sql = """
                 UPDATE tasker
                 SET
-                    todoist_username = :todoist_username, 
+                    todoist_username = :todoist_username,
                     todoist_id = :todoist_id, 
                     todoist_token = :todoist_token, 
                     telegram_token = :telegram_token, 
@@ -67,7 +68,7 @@ public class TaskerRepositoryImpl implements TaskerRepository {
 
         return client.sql(sql)
                 .param("telegram_token", telegramToken)
-                .query(TaskerEntity.class)
+                .query(new TaskerEntityRowMapper())
                 .single();
     }
 
@@ -80,7 +81,7 @@ public class TaskerRepositoryImpl implements TaskerRepository {
 
         return !client.sql(sql)
                 .param("todoist_token", todoistToken)
-                .query(TaskerEntity.class)
+                .query(new TaskerEntityRowMapper())
                 .list().isEmpty();
     }
 
@@ -93,7 +94,7 @@ public class TaskerRepositoryImpl implements TaskerRepository {
 
         return !client.sql(sql)
                 .param("telegram_token", telegramToken)
-                .query(TaskerEntity.class)
+                .query(new TaskerEntityRowMapper())
                 .list().isEmpty();
     }
 
@@ -107,7 +108,7 @@ public class TaskerRepositoryImpl implements TaskerRepository {
         return !client.sql(sql)
                 .param("telegram_token", telegramToken)
                 .param("todoist_token", todoistToken)
-                .query(TaskerEntity.class)
+                .query(new TaskerEntityRowMapper())
                 .list().isEmpty();
     }
 }

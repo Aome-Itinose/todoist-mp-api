@@ -4,6 +4,7 @@ import com.aome.todoist_mp_api.exception.TaskerNotFoundException;
 import com.aome.todoist_mp_api.exception.TaskerNotSaveException;
 import com.aome.todoist_mp_api.model.TaskerEntity;
 import com.aome.todoist_mp_api.store.repository.TaskerRepository;
+import com.aome.todoist_mp_api.util.LoggableDebug;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
@@ -17,6 +18,7 @@ public class TaskerServiceImpl implements TaskerService {
     private final TaskerRepository repository;
 
     @Override
+    @LoggableDebug
     public @NotNull TaskerEntity save(@NotNull TaskerEntity tasker) {
         try {
             return repository.save(tasker);
@@ -26,6 +28,7 @@ public class TaskerServiceImpl implements TaskerService {
     }
 
     @Override
+    @LoggableDebug
     public @NotNull TaskerEntity update(@NotNull TaskerEntity tasker) {
         try {
             return repository.update(tasker);
@@ -35,6 +38,7 @@ public class TaskerServiceImpl implements TaskerService {
     }
 
     @Override
+    @LoggableDebug
     public @NotNull TaskerEntity findByTelegramToken(@NotNull String telegramToken) {
         try {
             return repository.findByTelegramToken(telegramToken);
@@ -44,6 +48,7 @@ public class TaskerServiceImpl implements TaskerService {
     }
 
     @Override
+    @LoggableDebug
     public boolean existByTodoistToken(@NotNull String todoistToken) {
         try {
             return repository.existByTodoistToken(todoistToken);
@@ -53,6 +58,7 @@ public class TaskerServiceImpl implements TaskerService {
     }
 
     @Override
+    @LoggableDebug
     public boolean existByTelegramToken(@NotNull String telegramToken) {
         try {
             return repository.existByTelegramToken(telegramToken);
@@ -62,6 +68,7 @@ public class TaskerServiceImpl implements TaskerService {
     }
 
     @Override
+    @LoggableDebug
     public boolean existByTelegramAndTodoistToken(@NotNull String telegramToken, @NotNull String todoistToken) {
         try {
             return repository.existByTelegramAndTodoistToken(telegramToken, todoistToken);

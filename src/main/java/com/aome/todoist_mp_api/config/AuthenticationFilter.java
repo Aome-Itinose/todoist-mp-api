@@ -3,6 +3,7 @@ package com.aome.todoist_mp_api.config;
 import com.aome.todoist_mp_api.exception.TaskerNotFoundException;
 import com.aome.todoist_mp_api.model.TaskerEntity;
 import com.aome.todoist_mp_api.store.service.TaskerService;
+import com.aome.todoist_mp_api.util.JwtUtil;
 import com.aome.todoist_mp_api.util.SecurityContextHandler;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import jakarta.servlet.FilterChain;
@@ -34,16 +35,20 @@ public class AuthenticationFilter extends OncePerRequestFilter {
         String bearerToken = getBearerToken(request);
         if (bearerToken.isEmpty()) {
             log.warn("No Bearer token provided for {} request to {}", request.getMethod(), request.getRequestURI());
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "No Bearer token provided");
-            return;
-        }
-
-        log.debug("Authenticating request with token: {}", maskToken(bearerToken));
-        try {
-            String telegramToken = jwtUtil.validateAndGetChatId(bearerToken);
-            authenticateTasker(telegramToken);
-        } catch (TaskerNotFoundException | JWTVerificationException e) {
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid Bearer token");
+        } else {
+            log.debug("Authenticating request with token: {}", maskToken(bearerToken));
+            try {
+                String telegramToken = jwtUtil.validateAndGetChatId(bearerToken);
+                authenticateTasker(telegramToken);
+            } catch (TaskerNotFoundException e) {
+                log.warn("Tasker not found for token {}", bearerToken);
+            } catch (JWTVerificationException e) {
+                log.warn("JWT verification failed for token {}: {}", maskToken(bearerToken), e.getMessage());
+            } catch (Exception e) {
+                log.error("Unexpected error during authentication for token {}: {}", maskToken(bearerToken), e.getMessage(), e);
+                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Authentication failed");
+                return;
+            }
         }
 
         filterChain.doFilter(request, response);
@@ -57,10 +62,9 @@ public class AuthenticationFilter extends OncePerRequestFilter {
         return Strings.EMPTY;
     }
 
-    private void authenticateTasker(String telegramToken) throws IOException {
+    private void authenticateTasker(String telegramToken) {
         TaskerEntity tasker = taskerService.findByTelegramToken(telegramToken);
         SecurityContextHandler.setAuthentication(tasker);
-        log.debug("Security context set for user: {}", tasker.todoistUsername());
     }
 
     private String maskToken(String token) {

@@ -3,10 +3,10 @@ package com.aome.todoist_mp_api.service;
 import com.aome.todoist_mp_api.model.dto.TaskDto;
 import com.aome.todoist_mp_api.model.dto.TaskListDto;
 import com.aome.todoist_mp_api.model.dto.TodoistUserDto;
+import com.aome.todoist_mp_api.util.LoggableDebug;
 import com.aome.todoist_mp_api.util.Urls;
 import com.aome.todoist_mp_api.validation.Validator;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +18,6 @@ import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class TodoistWebService implements TheirService {
@@ -26,6 +25,7 @@ public class TodoistWebService implements TheirService {
     private final Validator validator;
 
     @Override
+    @LoggableDebug
     public TodoistUserDto loadUser() {
         ResponseEntity<TodoistUserDto> response;
 
@@ -45,6 +45,7 @@ public class TodoistWebService implements TheirService {
     }
 
     @Override
+    @LoggableDebug
     public List<TaskDto> loadCompletedTasks(OffsetDateTime start, OffsetDateTime end) {
         DateTimeFormatter formatter = DateTimeFormatter.ISO_INSTANT;
         String since = start.format(formatter);

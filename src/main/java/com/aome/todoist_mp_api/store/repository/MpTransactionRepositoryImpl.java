@@ -1,6 +1,7 @@
 package com.aome.todoist_mp_api.store.repository;
 
 import com.aome.todoist_mp_api.model.MpTransactionEntity;
+import com.aome.todoist_mp_api.converter.MpTransactionEntityRowMapper;
 import lombok.RequiredArgsConstructor;
 import org.intellij.lang.annotations.Language;
 import org.jetbrains.annotations.NotNull;
@@ -20,7 +21,7 @@ public class MpTransactionRepositoryImpl implements MpTransactionRepository {
 
         return client
                 .sql(sql)
-                .query(MpTransactionEntity.class)
+                .query(new MpTransactionEntityRowMapper())
                 .single();
     }
 

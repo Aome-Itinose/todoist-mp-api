@@ -4,6 +4,7 @@ import com.aome.todoist_mp_api.exception.MpTransactionNotFoundException;
 import com.aome.todoist_mp_api.exception.MpTransactionNotSaveException;
 import com.aome.todoist_mp_api.model.MpTransactionEntity;
 import com.aome.todoist_mp_api.store.repository.MpTransactionRepository;
+import com.aome.todoist_mp_api.util.LoggableDebug;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.dao.DataAccessException;
@@ -17,6 +18,7 @@ public class MpTransactionServiceImpl implements MpTransactionService {
     private final MpTransactionRepository transactionRepository;
 
     @Override
+    @LoggableDebug
     public OffsetDateTime getLastCreatedTimestamp() {
         try {
             return transactionRepository.findLastCreated().timestamp();
@@ -26,6 +28,7 @@ public class MpTransactionServiceImpl implements MpTransactionService {
     }
 
     @Override
+    @LoggableDebug
     public @NotNull MpTransactionEntity save(@NotNull MpTransactionEntity transaction) {
         try {
             return transactionRepository.save(transaction);

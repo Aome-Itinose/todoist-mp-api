@@ -1,4 +1,4 @@
-package com.aome.todoist_mp_api.util;
+package com.aome.todoist_mp_api.converter;
 
 import com.aome.todoist_mp_api.model.TaskEntity;
 import com.aome.todoist_mp_api.model.dto.TaskDto;

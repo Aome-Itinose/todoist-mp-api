@@ -3,6 +3,7 @@ package com.aome.todoist_mp_api.store.service;
 import com.aome.todoist_mp_api.exception.RewardNotSaveException;
 import com.aome.todoist_mp_api.model.RewardEntity;
 import com.aome.todoist_mp_api.store.repository.RewardRepository;
+import com.aome.todoist_mp_api.util.LoggableDebug;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.dao.DataAccessException;
@@ -14,6 +15,7 @@ public class RewardServiceImpl implements RewardService {
     private final RewardRepository rewardRepository;
 
     @Override
+    @LoggableDebug
     public @NotNull RewardEntity save(@NotNull RewardEntity reward) {
         try {
             return rewardRepository.save(reward);

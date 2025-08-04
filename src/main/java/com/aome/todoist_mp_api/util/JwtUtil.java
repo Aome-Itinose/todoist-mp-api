@@ -1,5 +1,6 @@
-package com.aome.todoist_mp_api.config;
+package com.aome.todoist_mp_api.util;
 
+import com.aome.todoist_mp_api.config.JwtConfig;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;

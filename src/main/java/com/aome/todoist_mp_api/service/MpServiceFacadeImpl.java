@@ -12,7 +12,8 @@ import com.aome.todoist_mp_api.store.service.MpTransactionService;
 import com.aome.todoist_mp_api.store.service.RewardService;
 import com.aome.todoist_mp_api.store.service.TaskService;
 import com.aome.todoist_mp_api.store.service.TaskerService;
-import com.aome.todoist_mp_api.util.Converter;
+import com.aome.todoist_mp_api.converter.Converter;
+import com.aome.todoist_mp_api.util.LoggableDebug;
 import com.aome.todoist_mp_api.util.SecurityContextHandler;
 import com.aome.todoist_mp_api.validation.Validator;
 import lombok.RequiredArgsConstructor;
@@ -36,6 +37,7 @@ public class MpServiceFacadeImpl implements MpServiceFacade {
     private final Validator validator;
 
     @Override
+    @LoggableDebug
     public int currentMp() {
         TaskerEntity tasker = SecurityContextHandler.authenticatedUser();
         Long taskerId = tasker.id();
@@ -58,6 +60,7 @@ public class MpServiceFacadeImpl implements MpServiceFacade {
     }
 
     @Override
+    @LoggableDebug
     public int reduceMp(ReduceRequest request) {
         validator.validate(request);
         TaskerEntity tasker = SecurityContextHandler.authenticatedUser();
@@ -89,6 +92,7 @@ public class MpServiceFacadeImpl implements MpServiceFacade {
         return tasker.mp();
     }
 
+    @LoggableDebug
     private OffsetDateTime lastUpdatedOrDefault() {
         OffsetDateTime offsetDateTime = null;
         try {

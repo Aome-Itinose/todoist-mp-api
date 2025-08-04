@@ -1,16 +1,15 @@
 package com.aome.todoist_mp_api.service;
 
-import com.aome.todoist_mp_api.model.dto.RegistrationRequest;
 import com.aome.todoist_mp_api.model.TaskerEntity;
+import com.aome.todoist_mp_api.model.dto.RegistrationRequest;
 import com.aome.todoist_mp_api.model.dto.TodoistUserDto;
 import com.aome.todoist_mp_api.store.service.TaskerService;
+import com.aome.todoist_mp_api.util.LoggableDebug;
 import com.aome.todoist_mp_api.util.SecurityContextHandler;
 import com.aome.todoist_mp_api.validation.Validator;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AuthServiceFacade implements AuthService {
@@ -19,6 +18,7 @@ public class AuthServiceFacade implements AuthService {
 
     private final Validator validator;
 
+    @LoggableDebug
     public String registration(RegistrationRequest registrationRequest) {
         validator.validate(registrationRequest);
 
