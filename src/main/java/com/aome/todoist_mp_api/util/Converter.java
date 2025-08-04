@@ -1,7 +1,7 @@
 package com.aome.todoist_mp_api.util;
 
-import com.aome.todoist_mp_api.model.TaskDto;
 import com.aome.todoist_mp_api.model.TaskEntity;
+import com.aome.todoist_mp_api.model.dto.TaskDto;
 
 public class Converter {
     public static TaskEntity toEntity(TaskDto dto, Long userId) {
@@ -14,5 +14,4 @@ public class Converter {
                 new TaskParameterParser(dto.content(), dto.description()).getMp()
         );
     }
-
 }

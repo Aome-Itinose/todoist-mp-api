@@ -1,8 +1,8 @@
 package com.aome.todoist_mp_api.service;
 
-import com.aome.todoist_mp_api.model.TaskDto;
-import com.aome.todoist_mp_api.model.TaskListDto;
-import com.aome.todoist_mp_api.model.TodoistUserDto;
+import com.aome.todoist_mp_api.model.dto.TaskDto;
+import com.aome.todoist_mp_api.model.dto.TaskListDto;
+import com.aome.todoist_mp_api.model.dto.TodoistUserDto;
 import com.aome.todoist_mp_api.util.Urls;
 import com.aome.todoist_mp_api.validation.Validator;
 import lombok.RequiredArgsConstructor;
@@ -14,11 +14,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @Slf4j

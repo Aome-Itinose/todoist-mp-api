@@ -1,6 +1,6 @@
 package com.aome.todoist_mp_api.exception;
 
-public class MpTransactionNotSaveException extends RuntimeException {
+public class MpTransactionNotSaveException extends UserFriendlyException {
     public MpTransactionNotSaveException(String message) {
         super(message);
     }

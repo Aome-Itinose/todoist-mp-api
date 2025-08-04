@@ -1,19 +1,16 @@
 package com.aome.todoist_mp_api.controller;
 
 import com.aome.todoist_mp_api.exception.PreconditionFailure;
-import com.aome.todoist_mp_api.exception.TaskerNotSaveException;
-import com.aome.todoist_mp_api.exception.TodoistRequestFailure;
+import com.aome.todoist_mp_api.exception.UserFriendlyException;
 import com.aome.todoist_mp_api.model.HttpResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @Slf4j
-@ControllerAdvice
+@RestControllerAdvice
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(PreconditionFailure.class)
@@ -24,20 +21,12 @@ public class GlobalExceptionHandler {
                 .body(new HttpResponse(preconditionFailure));
     }
 
-    @ExceptionHandler(TodoistRequestFailure.class)
-    public ResponseEntity<HttpResponse> handleTodoistRequestFailure(TodoistRequestFailure todoistRequestFailure) {
-        log.error("Todoist request failure occurred: {}", todoistRequestFailure.getMessage(), todoistRequestFailure);
+    @ExceptionHandler(UserFriendlyException.class)
+    public ResponseEntity<HttpResponse> handleUserFriendlyException(UserFriendlyException userFriendlyException) {
+        log.error("User-friendly exception occurred: {}", userFriendlyException.getMessage(), userFriendlyException);
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(new HttpResponse(todoistRequestFailure.getMessage(), null));
-    }
-
-    @ExceptionHandler(TaskerNotSaveException.class)
-    public ResponseEntity<HttpResponse> handleTaskerNotSaveException(TaskerNotSaveException taskerNotSaveException) {
-        log.error("Tasker not save exception occurred: {}", taskerNotSaveException.getMessage(), taskerNotSaveException);
-        return ResponseEntity
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(new HttpResponse(taskerNotSaveException.getMessage(), null));
+                .body(new HttpResponse(userFriendlyException.getMessage(), HttpResponse.StatusCode.INTERNAL));
     }
 
     @ExceptionHandler(Exception.class)

@@ -1,6 +1,6 @@
 package com.aome.todoist_mp_api.exception;
 
-public class TaskerNotFoundException extends RuntimeException {
+public class TaskerNotFoundException extends UserFriendlyException {
     public TaskerNotFoundException(String message) {
         super(message);
     }

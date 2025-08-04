@@ -1,8 +1,8 @@
 package com.aome.todoist_mp_api.service;
 
-import com.aome.todoist_mp_api.model.RegistrationRequest;
+import com.aome.todoist_mp_api.model.dto.RegistrationRequest;
 import com.aome.todoist_mp_api.model.TaskerEntity;
-import com.aome.todoist_mp_api.model.TodoistUserDto;
+import com.aome.todoist_mp_api.model.dto.TodoistUserDto;
 import com.aome.todoist_mp_api.store.service.TaskerService;
 import com.aome.todoist_mp_api.util.SecurityContextHandler;
 import com.aome.todoist_mp_api.validation.Validator;

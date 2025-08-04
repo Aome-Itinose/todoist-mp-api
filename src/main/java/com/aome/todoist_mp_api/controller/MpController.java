@@ -1,14 +1,13 @@
 package com.aome.todoist_mp_api.controller;
 
 import com.aome.todoist_mp_api.model.HttpResponse;
+import com.aome.todoist_mp_api.model.dto.ReduceRequest;
 import com.aome.todoist_mp_api.service.MpServiceFacade;
 import com.aome.todoist_mp_api.util.SecurityContextHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
@@ -17,15 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class MpController {
     private final MpServiceFacade mpServiceFacade;
 
-    @GetMapping("/message")
-    public String getMessage(){
-        String username = SecurityContextHandler.authenticatedUser().todoistUsername();
-        log.info("Getting message for user: {}", username);
-        String message = "Hello, %s, this is the current MP!".formatted(username);
-        log.debug("Generated message: {}", message);
-        return message;
-    }
-
     @GetMapping()
     public ResponseEntity<HttpResponse> getCurrentMp() {
         log.info("Getting current MP");
@@ -33,8 +23,17 @@ public class MpController {
         log.debug("Current MP value: {}", currentMp);
         var response = HttpResponse.success("Current MP retrieved successfully");
         response.addPayload("current_mp", currentMp);
-        log.info("Current MP retrieved successfully for user: {}", 
+        log.info("Current MP retrieved successfully for user: {}",
                 SecurityContextHandler.authenticatedUser().todoistUsername());
+        return ResponseEntity.ok(response);
+    }
+
+    @PatchMapping
+    public ResponseEntity<HttpResponse> reduceMp(@RequestBody ReduceRequest request) {
+        int currentMp = mpServiceFacade.reduceMp(request);
+        log.info("Reduced MP by {}. New MP: {}", request.amount(), currentMp);
+        var response = HttpResponse.success("MP reduced successfully");
+        response.addPayload("current_mp", currentMp);
         return ResponseEntity.ok(response);
     }
 }

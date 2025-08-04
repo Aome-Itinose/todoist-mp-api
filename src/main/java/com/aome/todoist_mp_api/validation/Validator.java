@@ -2,7 +2,8 @@ package com.aome.todoist_mp_api.validation;
 
 import com.aome.todoist_mp_api.exception.PreconditionFailure;
 import com.aome.todoist_mp_api.exception.TodoistRequestFailure;
-import com.aome.todoist_mp_api.model.RegistrationRequest;
+import com.aome.todoist_mp_api.model.dto.ReduceRequest;
+import com.aome.todoist_mp_api.model.dto.RegistrationRequest;
 import com.aome.todoist_mp_api.store.service.TaskerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -76,5 +77,20 @@ public class Validator {
         }
 
         log.debug("HTTP response validation passed");
+    }
+
+    public void validate(ReduceRequest request) {
+        log.debug("Validating MP reduction request");
+
+        if (request.amount() <= 0) {
+            log.warn("MP reduction validation failed: amount must be greater than zero");
+            throw PreconditionFailure.invalidMpReduceAmount("MP reduction amount must be greater than zero.");
+        }
+        if (Strings.isBlank(request.reason())) {
+            log.warn("MP reduction validation failed: reason must not be null or blank");
+            throw PreconditionFailure.invalidContent("MP reduction reason must not be null or blank.");
+        }
+
+        log.info("MP reduction request validation passed");
     }
 }

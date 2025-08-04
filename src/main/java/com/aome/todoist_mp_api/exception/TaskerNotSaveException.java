@@ -1,6 +1,6 @@
 package com.aome.todoist_mp_api.exception;
 
-public class TaskerNotSaveException extends RuntimeException {
+public class TaskerNotSaveException extends UserFriendlyException {
     private TaskerNotSaveException(String message) {
         super(message);
     }

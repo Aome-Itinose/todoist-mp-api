@@ -21,6 +21,15 @@ public record MpTransactionEntity(
         this(null, taskerId, deltaMp, OffsetDateTime.now(), taskCount);
     }
 
+    public MpTransactionEntity(
+            Long taskerId,
+            Integer deltaMp,
+            OffsetDateTime timestamp,
+            Integer taskCount
+    ) {
+        this(null, taskerId, deltaMp, timestamp, taskCount);
+    }
+
     public static MpTransactionEntity fromCompletedTasks(Long taskerId, List<TaskEntity> completedTasks) {
         return new MpTransactionEntity(
                 taskerId,

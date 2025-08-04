@@ -40,6 +40,9 @@ public record HttpResponse(
         INVALID_TODOIST_TOKEN,
         EXISTED_TELEGRAM_TOKEN,
         EXISTED_TODOIST_TOKEN,
-        EXISTED_USER
+        EXISTED_USER,
+        INVALID_MP_REDUCE_AMOUNT,
+        INVALID_CONTENT,
+        INTERNAL
     }
 }

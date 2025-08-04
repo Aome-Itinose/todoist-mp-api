@@ -1,9 +1,8 @@
 package com.aome.todoist_mp_api.exception;
 
 import org.jetbrains.annotations.NotNull;
-import org.springframework.dao.DataAccessException;
 
-public class MpTransactionNotFoundException extends RuntimeException {
+public class MpTransactionNotFoundException extends UserFriendlyException {
     public MpTransactionNotFoundException(String message) {
         super(message);
     }

@@ -4,7 +4,7 @@ import com.aome.todoist_mp_api.model.HttpResponse;
 import lombok.Getter;
 
 @Getter
-public class PreconditionFailure extends RuntimeException {
+public class PreconditionFailure extends UserFriendlyException {
     private final HttpResponse.StatusCode errorCode;
 
     private PreconditionFailure(String message, HttpResponse.StatusCode errorCode) {
@@ -30,5 +30,13 @@ public class PreconditionFailure extends RuntimeException {
 
     public static PreconditionFailure existedUser() {
         return new  PreconditionFailure("User with this telegram and todoist token already exist.", HttpResponse.StatusCode.EXISTED_USER);
+    }
+
+    public static PreconditionFailure invalidMpReduceAmount(String message) {
+        return new PreconditionFailure(message, HttpResponse.StatusCode.INVALID_MP_REDUCE_AMOUNT);
+    }
+
+    public static PreconditionFailure invalidContent(String message) {
+        return new PreconditionFailure(message, HttpResponse.StatusCode.INVALID_CONTENT);
     }
 }
