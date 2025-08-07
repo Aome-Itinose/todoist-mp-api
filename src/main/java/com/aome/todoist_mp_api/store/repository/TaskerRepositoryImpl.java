@@ -41,9 +41,9 @@ public class TaskerRepositoryImpl implements TaskerRepository {
                 UPDATE tasker
                 SET
                     todoist_username = :todoist_username,
-                    todoist_id = :todoist_id, 
-                    todoist_token = :todoist_token, 
-                    telegram_token = :telegram_token, 
+                    todoist_id = :todoist_id,
+                    todoist_token = :todoist_token,
+                    telegram_token = :telegram_token,
                     mp = :mp
                 WHERE id = :id""";
 

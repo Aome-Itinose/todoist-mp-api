@@ -9,6 +9,7 @@ import com.aome.todoist_mp_api.util.SecurityContextHandler;
 import com.aome.todoist_mp_api.validation.Validator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -19,6 +20,7 @@ public class AuthServiceFacade implements AuthService {
     private final Validator validator;
 
     @LoggableDebug
+    @Transactional
     public String registration(RegistrationRequest registrationRequest) {
         validator.validate(registrationRequest);
 

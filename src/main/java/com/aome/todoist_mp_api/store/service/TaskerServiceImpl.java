@@ -10,15 +10,18 @@ import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class TaskerServiceImpl implements TaskerService {
     private final TaskerRepository repository;
 
     @Override
     @LoggableDebug
+    @Transactional
     public @NotNull TaskerEntity save(@NotNull TaskerEntity tasker) {
         try {
             return repository.save(tasker);
@@ -29,6 +32,7 @@ public class TaskerServiceImpl implements TaskerService {
 
     @Override
     @LoggableDebug
+    @Transactional
     public @NotNull TaskerEntity update(@NotNull TaskerEntity tasker) {
         try {
             return repository.update(tasker);

@@ -1,5 +1,6 @@
 package com.aome.todoist_mp_api.service;
 
+import com.aome.todoist_mp_api.converter.Converter;
 import com.aome.todoist_mp_api.exception.MpTransactionNotFoundException;
 import com.aome.todoist_mp_api.exception.PreconditionFailure;
 import com.aome.todoist_mp_api.model.MpTransactionEntity;
@@ -12,13 +13,13 @@ import com.aome.todoist_mp_api.store.service.MpTransactionService;
 import com.aome.todoist_mp_api.store.service.RewardService;
 import com.aome.todoist_mp_api.store.service.TaskService;
 import com.aome.todoist_mp_api.store.service.TaskerService;
-import com.aome.todoist_mp_api.converter.Converter;
 import com.aome.todoist_mp_api.util.LoggableDebug;
 import com.aome.todoist_mp_api.util.SecurityContextHandler;
 import com.aome.todoist_mp_api.validation.Validator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -38,6 +39,7 @@ public class MpServiceFacadeImpl implements MpServiceFacade {
 
     @Override
     @LoggableDebug
+    @Transactional
     public int currentMp() {
         TaskerEntity tasker = SecurityContextHandler.authenticatedUser();
         Long taskerId = tasker.id();
@@ -61,6 +63,7 @@ public class MpServiceFacadeImpl implements MpServiceFacade {
 
     @Override
     @LoggableDebug
+    @Transactional
     public int reduceMp(ReduceRequest request) {
         validator.validate(request);
         TaskerEntity tasker = SecurityContextHandler.authenticatedUser();
