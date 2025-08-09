@@ -52,7 +52,12 @@ public class Validator {
             if (response.getStatusCode().isSameCodeAs(HttpStatus.UNAUTHORIZED)) {
                 throw PreconditionFailure.invalidTodoistToken();
             }
-            throw TodoistRequestFailure.failure();
+            throw TodoistRequestFailure.failure(
+                    "Todoist request failed with status code: %s, body: %s".formatted(
+                            response.getStatusCode(),
+                            response.getBody()
+                    )
+            );
         }
 
         if (!response.hasBody() && response.getBody() != null) {

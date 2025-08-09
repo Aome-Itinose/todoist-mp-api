@@ -9,6 +9,7 @@ public interface TaskerService {
     @NotNull TaskerEntity update(@NotNull TaskerEntity tasker);
 
     @NotNull TaskerEntity findByTelegramToken(@NotNull String telegramToken);
+    @NotNull TaskerEntity findById(@NotNull Long id);
 
     boolean existByTodoistToken(@NotNull String todoistToken);
     boolean existByTelegramToken(@NotNull String telegramToken);

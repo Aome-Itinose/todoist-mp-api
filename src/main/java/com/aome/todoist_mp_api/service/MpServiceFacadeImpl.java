@@ -8,7 +8,7 @@ import com.aome.todoist_mp_api.model.RewardEntity;
 import com.aome.todoist_mp_api.model.TaskEntity;
 import com.aome.todoist_mp_api.model.TaskerEntity;
 import com.aome.todoist_mp_api.model.dto.ReduceRequest;
-import com.aome.todoist_mp_api.model.dto.TaskDto;
+import com.aome.todoist_mp_api.model.dto.GetTaskDto;
 import com.aome.todoist_mp_api.store.service.MpTransactionService;
 import com.aome.todoist_mp_api.store.service.RewardService;
 import com.aome.todoist_mp_api.store.service.TaskService;
@@ -29,7 +29,7 @@ import java.util.Objects;
 @Service
 @RequiredArgsConstructor
 public class MpServiceFacadeImpl implements MpServiceFacade {
-    private final TheirService theirService;
+    private final ContextualApiService apiService;
 
     private final TaskerService taskerService;
     private final TaskService taskService;
@@ -47,8 +47,8 @@ public class MpServiceFacadeImpl implements MpServiceFacade {
         OffsetDateTime now = OffsetDateTime.now();
         OffsetDateTime lastUpdate = lastUpdatedOrDefault();
 
-        List<TaskDto> completedTaskDtos = theirService.loadCompletedTasks(lastUpdate, now);
-        List<TaskEntity> completedTasks = completedTaskDtos.stream()
+        List<GetTaskDto> completedGetTaskDtos = apiService.getTasksByCompletion(lastUpdate, now);
+        List<TaskEntity> completedTasks = completedGetTaskDtos.stream()
                 .map(dto -> Converter.toEntity(dto, taskerId))
                 .toList();
 

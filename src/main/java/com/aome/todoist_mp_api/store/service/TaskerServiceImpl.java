@@ -53,6 +53,16 @@ public class TaskerServiceImpl implements TaskerService {
 
     @Override
     @LoggableDebug
+    public @NotNull TaskerEntity findById(@NotNull Long id) {
+        try {
+            return repository.findById(id);
+        } catch (DataAccessException ex) {
+            throw TaskerNotFoundException.create(ex);
+        }
+    }
+
+    @Override
+    @LoggableDebug
     public boolean existByTodoistToken(@NotNull String todoistToken) {
         try {
             return repository.existByTodoistToken(todoistToken);

@@ -5,8 +5,8 @@ public class TodoistRequestFailure extends RuntimeException {
         super(message);
     }
 
-    public static TodoistRequestFailure failure(){
-        return new TodoistRequestFailure("Todoist request failed.");
+    public static TodoistRequestFailure failure(String message){
+        return new TodoistRequestFailure(message);
     }
 
     public static TodoistRequestFailure responseIsNull() {

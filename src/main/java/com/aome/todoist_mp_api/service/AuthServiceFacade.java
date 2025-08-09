@@ -1,8 +1,8 @@
 package com.aome.todoist_mp_api.service;
 
 import com.aome.todoist_mp_api.model.TaskerEntity;
+import com.aome.todoist_mp_api.model.dto.GetUserDto;
 import com.aome.todoist_mp_api.model.dto.RegistrationRequest;
-import com.aome.todoist_mp_api.model.dto.TodoistUserDto;
 import com.aome.todoist_mp_api.store.service.TaskerService;
 import com.aome.todoist_mp_api.util.LoggableDebug;
 import com.aome.todoist_mp_api.util.SecurityContextHandler;
@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class AuthServiceFacade implements AuthService {
-    private final TheirService theirService;
+    private final ContextlessApiService apiService;
     private final TaskerService taskerService;
 
     private final Validator validator;
@@ -23,6 +23,7 @@ public class AuthServiceFacade implements AuthService {
     @Transactional
     public String registration(RegistrationRequest registrationRequest) {
         validator.validate(registrationRequest);
+        GetUserDto todoistUser = apiService.getUser(registrationRequest.todoistToken());
 
         TaskerEntity newTasker = new TaskerEntity(
                 registrationRequest.todoistToken(),
@@ -30,7 +31,6 @@ public class AuthServiceFacade implements AuthService {
         );
 
         SecurityContextHandler.setAuthentication(newTasker);
-        TodoistUserDto todoistUser = theirService.loadUser();
 
         newTasker = newTasker
                 .withTodoistUsername(todoistUser.username())

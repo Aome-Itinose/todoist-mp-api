@@ -2,17 +2,19 @@ package com.aome.todoist_mp_api.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.With;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.OffsetDateTime;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public record TaskDto(
+@With
+public record GetTaskDto(
         @JsonProperty("id")
         @NotNull Long id,
 
         @JsonProperty("user_id")
-        @NotNull Long userId,
+        Long userId,
 
         @JsonProperty("content")
         @NotNull String content,
@@ -21,5 +23,8 @@ public record TaskDto(
         String description,
 
         @JsonProperty("completed_at")
-        OffsetDateTime completedAt
+        OffsetDateTime completedAt,
+
+        @JsonProperty("due")
+        TaskDueDto due
 ) {}

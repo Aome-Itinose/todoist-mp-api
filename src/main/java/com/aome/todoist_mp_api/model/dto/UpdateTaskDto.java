@@ -2,12 +2,10 @@ package com.aome.todoist_mp_api.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.jetbrains.annotations.NotNull;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public record TodoistUserDto(
-        @JsonProperty("id")
-        @NotNull Long id,
-        @JsonProperty("full_name")
-        @NotNull String username
+public record UpdateTaskDto(
+        Long taskId,
+        @JsonProperty("due_datetime") String dueDatetime,
+        @JsonProperty("due_date") String dueDate
 ) {}

@@ -6,5 +6,7 @@ public class Urls {
     public static final String USER = TODOIST_API + "/user";
 
     public static final String TASK_COMPLETED = TODOIST_API + "/tasks/completed";
+    public static final String TASKS_BY_LABEL = TODOIST_API + "/tasks?label=%s";
     public static final String TASK_BY_COMPLETION_DATE = TASK_COMPLETED + "/by_completion_date?since=%s&until=%s";
+    public static final String UPDATE_TASK = TODOIST_API + "/tasks/%s";
 }

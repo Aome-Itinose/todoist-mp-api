@@ -73,6 +73,19 @@ public class TaskerRepositoryImpl implements TaskerRepository {
     }
 
     @Override
+    public @NotNull TaskerEntity findById(@NotNull Long id) throws DataAccessException {
+        @Language("SQL") String sql = """
+                SELECT *
+                FROM tasker
+                WHERE id = :id""";
+
+        return client.sql(sql)
+                .param("id", id)
+                .query(new TaskerEntityRowMapper())
+                .single();
+    }
+
+    @Override
     public boolean existByTodoistToken(@NotNull String todoistToken) throws DataAccessException {
         @Language("SQL") String sql = """
                 SELECT *

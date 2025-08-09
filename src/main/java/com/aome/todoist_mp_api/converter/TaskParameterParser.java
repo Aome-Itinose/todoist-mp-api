@@ -2,6 +2,7 @@ package com.aome.todoist_mp_api.converter;
 
 import lombok.extern.slf4j.Slf4j;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -58,5 +59,17 @@ public class TaskParameterParser {
             }
         }
         return 0;
+    }
+
+    public LocalDate getDeadline() {
+        String deadline = params.get("deadline");
+        if (deadline != null) {
+            try {
+                return LocalDate.parse(deadline);
+            } catch (Exception e) {
+                log.warn("Invalid deadline format: {}", deadline, e);
+            }
+        }
+        return null;
     }
 }
