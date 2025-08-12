@@ -11,7 +11,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.OffsetDateTime;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -21,11 +21,21 @@ public class MpTransactionServiceImpl implements MpTransactionService {
 
     @Override
     @LoggableDebug
-    public OffsetDateTime getLastCreatedTimestamp() {
+    public MpTransactionEntity findListCreated() {
         try {
-            return transactionRepository.findLastCreated().timestamp();
+            return transactionRepository.findLastCreated();
         }catch (DataAccessException ex) {
             throw MpTransactionNotFoundException.create(ex);
+        }
+    }
+
+    @Override
+    @LoggableDebug
+    public Optional<MpTransactionEntity> safeFindLastCreated() {
+        try {
+            return Optional.of(findListCreated());
+        } catch (MpTransactionNotFoundException e) {
+            return Optional.empty();
         }
     }
 

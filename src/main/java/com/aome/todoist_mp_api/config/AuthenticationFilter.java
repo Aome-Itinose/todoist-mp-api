@@ -34,7 +34,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
     ) throws ServletException, IOException {
         String bearerToken = getBearerToken(request);
         if (bearerToken.isEmpty()) {
-            log.warn("No Bearer token provided for {} request to {}", request.getMethod(), request.getRequestURI());
+            log.trace("No Bearer token provided for {} request to {}", request.getMethod(), request.getRequestURI());
         } else {
             log.debug("Authenticating request with token: {}", maskToken(bearerToken));
             try {

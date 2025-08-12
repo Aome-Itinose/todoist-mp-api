@@ -1,14 +1,13 @@
 package com.aome.todoist_mp_api.service;
 
 import com.aome.todoist_mp_api.converter.Converter;
-import com.aome.todoist_mp_api.exception.MpTransactionNotFoundException;
 import com.aome.todoist_mp_api.exception.PreconditionFailure;
 import com.aome.todoist_mp_api.model.MpTransactionEntity;
 import com.aome.todoist_mp_api.model.RewardEntity;
 import com.aome.todoist_mp_api.model.TaskEntity;
 import com.aome.todoist_mp_api.model.TaskerEntity;
-import com.aome.todoist_mp_api.model.dto.ReduceRequest;
 import com.aome.todoist_mp_api.model.dto.GetTaskDto;
+import com.aome.todoist_mp_api.model.dto.ReduceRequest;
 import com.aome.todoist_mp_api.store.service.MpTransactionService;
 import com.aome.todoist_mp_api.store.service.RewardService;
 import com.aome.todoist_mp_api.store.service.TaskService;
@@ -23,7 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.OffsetDateTime;
 import java.util.List;
-import java.util.Objects;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -97,13 +96,14 @@ public class MpServiceFacadeImpl implements MpServiceFacade {
 
     @LoggableDebug
     private OffsetDateTime lastUpdatedOrDefault() {
-        OffsetDateTime offsetDateTime = null;
-        try {
-            offsetDateTime = mpTransactionService.getLastCreatedTimestamp();
-        } catch (MpTransactionNotFoundException e) {
-            log.info("MpTransaction not found, using default last update time");
+        OffsetDateTime offsetDateTime;
+        Optional<MpTransactionEntity> maybeLastEntity = mpTransactionService.safeFindLastCreated();
+        if (maybeLastEntity.isPresent()) {
+            offsetDateTime = maybeLastEntity.get().timestamp();
+        } else {
+            // Default to 30 days ago if no last update found
+            offsetDateTime = OffsetDateTime.now().minusDays(30);
         }
-        // Default to 30 days ago if no last update found
-        return Objects.requireNonNullElseGet(offsetDateTime, () -> OffsetDateTime.now().minusDays(30)).plusSeconds(1);
+        return offsetDateTime.plusSeconds(1);
     }
 }
