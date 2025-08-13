@@ -1,7 +1,7 @@
 package com.aome.todoist_mp_api.store.repository;
 
 import com.aome.todoist_mp_api.converter.MpTransactionEntityRowMapper;
-import com.aome.todoist_mp_api.exception.ProfileNotFoundException;
+import com.aome.todoist_mp_api.exception.MpTransactionNotFoundException;
 import com.aome.todoist_mp_api.model.entity.MpTransactionEntity;
 import lombok.RequiredArgsConstructor;
 import org.intellij.lang.annotations.Language;
@@ -29,7 +29,7 @@ public class MpTransactionRepositoryImpl implements MpTransactionRepository {
                 .sql(sql)
                 .query(new MpTransactionEntityRowMapper())
                 .list();
-        if (shouldBeSingle.isEmpty()) throw new ProfileNotFoundException();
+        if (shouldBeSingle.isEmpty()) throw new MpTransactionNotFoundException();
         if (shouldBeSingle.size() > 1)
             throw new IllegalStateException("Expected single transaction, but found: " + shouldBeSingle.size());
 
@@ -42,8 +42,7 @@ public class MpTransactionRepositoryImpl implements MpTransactionRepository {
                 INSERT INTO mp_transaction(
                     id, profile_id, delta_mp, timestamp, task_count)
                 VALUES(
-                    :id, :profile_id, :delta_mp, :timestamp, :task_count )
-                RETURNING id""";
+                    :id, :profile_id, :delta_mp, :timestamp, :task_count )""";
 
         client.sql(sql)
                 .param("id", transaction.id())

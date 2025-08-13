@@ -6,3 +6,5 @@ create table tasker(
                        telegram_token varchar(256) not null unique,
                        mp int not null default 0
 );
+
+drop table tasker;

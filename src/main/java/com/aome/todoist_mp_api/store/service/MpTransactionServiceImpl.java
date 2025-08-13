@@ -25,7 +25,7 @@ public class MpTransactionServiceImpl implements MpTransactionService {
         try {
             return transactionRepository.findLastCreated();
         } catch (DataAccessException | IllegalStateException ex) {
-            throw MpTransactionNotFoundException.create(ex);
+            throw new MpTransactionNotFoundException(ex);
         }
     }
 
@@ -46,7 +46,7 @@ public class MpTransactionServiceImpl implements MpTransactionService {
         try {
             return transactionRepository.save(transaction);
         }catch (DataAccessException | IllegalStateException ex) {
-            throw MpTransactionNotSaveException.create(ex);
+            throw new MpTransactionNotSaveException(ex);
         }
     }
 }

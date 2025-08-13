@@ -8,8 +8,4 @@ public class TaskNotSaveException extends ClientFriendlyException {
     public TaskNotSaveException(Exception e) {
         super(e);
     }
-
-    public static TaskNotSaveException create(Exception exception) {
-        return new TaskNotSaveException(exception);
-    }
 }

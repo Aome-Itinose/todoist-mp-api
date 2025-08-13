@@ -11,11 +11,7 @@ public class MpTransactionNotFoundException extends ClientFriendlyException {
         super(e);
     }
 
-    public static MpTransactionNotFoundException create(){
-        return new MpTransactionNotFoundException("Mp transaction not found");
-    }
-
-    public static MpTransactionNotFoundException create(@NotNull Exception ex) {
-        return new MpTransactionNotFoundException(ex);
+    public MpTransactionNotFoundException(){
+        super("MpTransaction not found");
     }
 }

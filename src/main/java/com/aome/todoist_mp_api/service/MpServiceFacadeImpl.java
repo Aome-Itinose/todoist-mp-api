@@ -14,7 +14,6 @@ import com.aome.todoist_mp_api.store.service.RewardService;
 import com.aome.todoist_mp_api.store.service.TaskService;
 import com.aome.todoist_mp_api.util.LoggableDebug;
 import com.aome.todoist_mp_api.util.SecurityContextHandler;
-import com.aome.todoist_mp_api.validation.Validator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -35,7 +34,6 @@ public class MpServiceFacadeImpl implements MpServiceFacade {
     private final TaskService taskService;
     private final MpTransactionService mpTransactionService;
     private final RewardService rewardService;
-    private final Validator validator;
 
     @Override
     @LoggableDebug
@@ -65,8 +63,6 @@ public class MpServiceFacadeImpl implements MpServiceFacade {
     @LoggableDebug
     @Transactional
     public int reduceMp(ReduceRequest request) {
-        validator.validate(request);
-
         var rewardToCreate = new RewardToCreate(request, "REDUCE")
                 .throwIfContentIsEmpty();
 

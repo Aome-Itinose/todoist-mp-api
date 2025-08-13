@@ -20,7 +20,7 @@ public class TaskRepositoryImpl implements TaskRepository {
         @Language("SQL") String sql = """
                 INSERT INTO task
                     (id, todoist_id, profile_id, content, description, completed_at, mp)
-                VALUES (?, ?, ?, ?, ?)""";
+                VALUES (?, ?, ?, ?, ?, ?, ?)""";
 
         template.batchUpdate(sql, tasks, tasks.size(), (ps, entity) -> {
             ps.setObject(1, entity.id());

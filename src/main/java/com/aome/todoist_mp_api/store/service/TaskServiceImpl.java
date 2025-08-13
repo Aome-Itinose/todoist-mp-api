@@ -24,7 +24,7 @@ public class TaskServiceImpl implements TaskService {
         try {
             repository.saveAll(tasks);
         } catch (Exception ex) {
-            throw TaskNotSaveException.create(ex);
+            throw new TaskNotSaveException(ex);
         }
     }
 }

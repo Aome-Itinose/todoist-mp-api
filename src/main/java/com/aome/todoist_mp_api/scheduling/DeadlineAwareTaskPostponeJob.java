@@ -2,10 +2,12 @@ package com.aome.todoist_mp_api.scheduling;
 
 import com.aome.todoist_mp_api.converter.Converter;
 import com.aome.todoist_mp_api.converter.TaskParameterParser;
+import com.aome.todoist_mp_api.model.entity.QuotaEntity;
 import com.aome.todoist_mp_api.model.todoist_service.GetTaskResponse;
 import com.aome.todoist_mp_api.model.entity.ProfileEntity;
 import com.aome.todoist_mp_api.service.ContextlessApiService;
 import com.aome.todoist_mp_api.store.service.ProfileService;
+import com.aome.todoist_mp_api.store.service.QuotaService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -16,25 +18,28 @@ import java.util.UUID;
 
 @RequiredArgsConstructor
 public class DeadlineAwareTaskPostponeJob extends RunnableJob {
-    private static final Integer QUOTA = 5;
     private static final String LABEL = "with_deadline";
     private static final String NAME = "DeadlineAwareTaskPostponeJob";
 
     @Getter
-    private final UUID taskerId;
+    private final UUID profileId;
 
     private final ProfileService profileService;
     private final ContextlessApiService apiService;
+    private final QuotaService quotaService;
 
     @Override
     public void execute() {
         status = Status.RUNNING;
 
-        ProfileEntity profile = profileService.findById(taskerId);
+        ProfileEntity profile = profileService.findById(profileId);
         String todoistToken = profile.todoistToken();
 
         List<GetTaskResponse> tasks = apiService.getTaskByLabel(todoistToken, LABEL);
+        QuotaEntity quota = quotaService.findByProfileIdAndType(profileId, QuotaEntity.Type.DEADLINE_POSTPONE);
 
+        // Filter tasks that have a deadline in the future and are due today or earlier
+        // and limit the number of tasks to the quota amount
         List<GetTaskResponse> filteredTasks = tasks.stream()
                 .filter(taskDto -> {
                     LocalDate deadline = new TaskParameterParser(taskDto.content(), taskDto.description()).getDeadline();
@@ -46,7 +51,9 @@ public class DeadlineAwareTaskPostponeJob extends RunnableJob {
                             ((taskDto.due().getDateTime() != null && taskDto.due().getDateTime().isBefore(now)) ||
                                     (taskDto.due().getDate() != null && taskDto.due().getDate().isBefore(nowDate)));
                 })
-                .limit(QUOTA).toList();
+                .limit(quota.amount()).toList();
+
+        // Change the due date of the filtered tasks to today
         filteredTasks.forEach(filteredTask -> {
             OffsetDateTime dateTime = filteredTask.due().getDateTime();
             if (dateTime != null) {
@@ -72,7 +79,7 @@ public class DeadlineAwareTaskPostponeJob extends RunnableJob {
 
     @Override
     public String name() {
-        return NAME + "-" + taskerId;
+        return NAME + "-" + profileId;
     }
 
     public boolean isDone() {

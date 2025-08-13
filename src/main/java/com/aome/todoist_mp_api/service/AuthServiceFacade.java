@@ -30,6 +30,7 @@ public class AuthServiceFacade implements AuthService {
         ).toEntity();
 
         SecurityContextHandler.setAuthentication(newProfileEntity);
+        newProfileEntity = profileService.save(newProfileEntity);
         return newProfileEntity.todoistUsername();
     }
 
