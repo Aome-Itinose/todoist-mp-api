@@ -2,7 +2,7 @@ package com.aome.todoist_mp_api.store.service;
 
 import com.aome.todoist_mp_api.exception.MpTransactionNotFoundException;
 import com.aome.todoist_mp_api.exception.MpTransactionNotSaveException;
-import com.aome.todoist_mp_api.model.MpTransactionEntity;
+import com.aome.todoist_mp_api.model.entity.MpTransactionEntity;
 import com.aome.todoist_mp_api.store.repository.MpTransactionRepository;
 import com.aome.todoist_mp_api.util.LoggableDebug;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +24,7 @@ public class MpTransactionServiceImpl implements MpTransactionService {
     public MpTransactionEntity findListCreated() {
         try {
             return transactionRepository.findLastCreated();
-        }catch (DataAccessException ex) {
+        } catch (DataAccessException | IllegalStateException ex) {
             throw MpTransactionNotFoundException.create(ex);
         }
     }

@@ -1,7 +1,7 @@
 package com.aome.todoist_mp_api.store.service;
 
 import com.aome.todoist_mp_api.exception.TaskNotSaveException;
-import com.aome.todoist_mp_api.model.TaskEntity;
+import com.aome.todoist_mp_api.model.entity.TaskEntity;
 import com.aome.todoist_mp_api.store.repository.TaskRepository;
 import com.aome.todoist_mp_api.util.LoggableDebug;
 import lombok.RequiredArgsConstructor;

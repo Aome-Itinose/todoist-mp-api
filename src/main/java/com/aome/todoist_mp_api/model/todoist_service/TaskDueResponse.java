@@ -1,4 +1,4 @@
-package com.aome.todoist_mp_api.model.dto;
+package com.aome.todoist_mp_api.model.todoist_service;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -13,7 +13,7 @@ import java.time.OffsetDateTime;
 @RequiredArgsConstructor
 @Getter
 @Setter
-public class TaskDueDto {
+public class TaskDueResponse {
     @JsonProperty("date")
     private LocalDate date;
     @JsonProperty("datetime")

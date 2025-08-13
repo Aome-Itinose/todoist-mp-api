@@ -1,0 +1,8 @@
+create table if not exists profile(
+                       id uuid primary key,
+                       todoist_username varchar(128) not null,
+                       todoist_id bigint not null unique ,
+                       todoist_token varchar(128) not null unique,
+                       telegram_token varchar(256) not null unique,
+                       mp int not null default 0
+);

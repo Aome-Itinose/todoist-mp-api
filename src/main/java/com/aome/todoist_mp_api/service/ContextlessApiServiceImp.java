@@ -1,8 +1,8 @@
 package com.aome.todoist_mp_api.service;
 
-import com.aome.todoist_mp_api.model.dto.GetTaskDto;
-import com.aome.todoist_mp_api.model.dto.GetUserDto;
-import com.aome.todoist_mp_api.model.dto.UpdateTaskDto;
+import com.aome.todoist_mp_api.model.todoist_service.GetTaskResponse;
+import com.aome.todoist_mp_api.model.todoist_service.GetUserResponse;
+import com.aome.todoist_mp_api.model.todoist_service.UpdateTaskRequest;
 import com.aome.todoist_mp_api.web.ApiClientService;
 import com.aome.todoist_mp_api.web.RestTemplateFactory;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +21,7 @@ public class ContextlessApiServiceImp implements ContextlessApiService {
     private final RestTemplateFactory restTemplateFactory;
 
     @Override
-    public GetUserDto getUser(String bearerToken) {
+    public GetUserResponse getUser(String bearerToken) {
         try {
             RestTemplate templateWithBearer = restTemplateFactory.withBearerToken(bearerToken);
             return apiClientService.withRestTemplate(templateWithBearer).loadUser(); // todo: check if not null. Можно сделать передав в отдельный класс и пометодно делать проверки
@@ -31,7 +31,7 @@ public class ContextlessApiServiceImp implements ContextlessApiService {
     }
 
     @Override
-    public List<GetTaskDto> getTaskByLabel(String bearerToken, String label) {
+    public List<GetTaskResponse> getTaskByLabel(String bearerToken, String label) {
         try {
             RestTemplate templateWithBearer = restTemplateFactory.withBearerToken(bearerToken);
             return apiClientService.withRestTemplate(templateWithBearer).loadByLabel(label);
@@ -41,7 +41,7 @@ public class ContextlessApiServiceImp implements ContextlessApiService {
     }
 
     @Override
-    public void updateTasks(String bearerToken, List<UpdateTaskDto> tasks) {
+    public void updateTasks(String bearerToken, List<UpdateTaskRequest> tasks) {
         try (ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(2)) {
             RestTemplate templateWithBearer = restTemplateFactory.withBearerToken(bearerToken);
             for (int i = 0; i < tasks.size(); i++) {

@@ -1,7 +1,7 @@
 package com.aome.todoist_mp_api.util;
 
 import com.aome.todoist_mp_api.exception.SecurityContextPrincipalException;
-import com.aome.todoist_mp_api.model.TaskerEntity;
+import com.aome.todoist_mp_api.model.entity.ProfileEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
 import org.jetbrains.annotations.NotNull;
@@ -33,13 +33,13 @@ public class SecurityContextHandler {
         return token;
     }
 
-    public static @NotNull TaskerEntity authenticatedUser() {
-        if (authentication().getPrincipal() instanceof TaskerEntity entity) return entity;
+    public static @NotNull ProfileEntity authenticatedUser() {
+        if (authentication().getPrincipal() instanceof ProfileEntity profile) return profile;
         throw SecurityContextPrincipalException.of("Invalid authentication principal type.");
     }
 
-    public static void setAuthentication(TaskerEntity tasker) {
-        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(tasker, null, List.of()));
-        log.debug("Security context set for tasker: id={}, telegram_token={}", tasker.id(), tasker.telegramToken());
+    public static void setAuthentication(ProfileEntity profile) {
+        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(profile, null, List.of()));
+        log.debug("Security context set for profile: id={}, telegram_token={}", profile.id(), profile.telegramToken());
     }
 }

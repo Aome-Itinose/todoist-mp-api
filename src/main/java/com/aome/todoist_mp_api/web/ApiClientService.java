@@ -1,9 +1,9 @@
 package com.aome.todoist_mp_api.web;
 
-import com.aome.todoist_mp_api.model.dto.GetTaskDto;
-import com.aome.todoist_mp_api.model.dto.GetTaskListDto;
-import com.aome.todoist_mp_api.model.dto.GetUserDto;
-import com.aome.todoist_mp_api.model.dto.UpdateTaskDto;
+import com.aome.todoist_mp_api.model.todoist_service.GetTaskResponse;
+import com.aome.todoist_mp_api.model.todoist_service.GetTaskListDto;
+import com.aome.todoist_mp_api.model.todoist_service.GetUserResponse;
+import com.aome.todoist_mp_api.model.todoist_service.UpdateTaskRequest;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.OffsetDateTime;
@@ -12,11 +12,11 @@ import java.util.List;
 public interface ApiClientService {
     ApiClientService withRestTemplate(RestTemplate restTemplate);
 
-    GetUserDto loadUser();
+    GetUserResponse loadUser();
 
     GetTaskListDto loadTasksByCompletion(OffsetDateTime start, OffsetDateTime end);
 
-    List<GetTaskDto> loadByLabel(String label);
+    List<GetTaskResponse> loadByLabel(String label);
 
-    GetTaskDto updateTask(String taskId, UpdateTaskDto updateTaskDto);
+    GetTaskResponse updateTask(String taskId, UpdateTaskRequest updateTaskRequest);
 }

@@ -1,6 +1,6 @@
 package com.aome.todoist_mp_api.store.repository;
 
-import com.aome.todoist_mp_api.model.TaskEntity;
+import com.aome.todoist_mp_api.model.entity.TaskEntity;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;

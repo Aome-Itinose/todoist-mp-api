@@ -1,7 +1,7 @@
 package com.aome.todoist_mp_api.controller;
 
 import com.aome.todoist_mp_api.model.HttpResponse;
-import com.aome.todoist_mp_api.model.dto.RegistrationRequest;
+import com.aome.todoist_mp_api.model.telegram_service.RegistrationRequest;
 import com.aome.todoist_mp_api.service.AuthService;
 import com.aome.todoist_mp_api.util.LoggableInfo;
 import lombok.RequiredArgsConstructor;

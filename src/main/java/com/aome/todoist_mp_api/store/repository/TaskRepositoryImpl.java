@@ -1,6 +1,6 @@
 package com.aome.todoist_mp_api.store.repository;
 
-import com.aome.todoist_mp_api.model.TaskEntity;
+import com.aome.todoist_mp_api.model.entity.TaskEntity;
 import lombok.RequiredArgsConstructor;
 import org.intellij.lang.annotations.Language;
 import org.jetbrains.annotations.NotNull;
@@ -19,15 +19,17 @@ public class TaskRepositoryImpl implements TaskRepository {
     public void saveAll(@NotNull List<TaskEntity> tasks) throws DataAccessException {
         @Language("SQL") String sql = """
                 INSERT INTO task
-                    (tasker_id, content, description, completed_at, mp)
+                    (id, todoist_id, profile_id, content, description, completed_at, mp)
                 VALUES (?, ?, ?, ?, ?)""";
 
         template.batchUpdate(sql, tasks, tasks.size(), (ps, entity) -> {
-            ps.setLong(1, entity.taskerId());
-            ps.setString(2, entity.content());
-            ps.setString(3, entity.description());
-            ps.setObject(4, entity.completedAt());
-            ps.setInt(5, entity.mp());
+            ps.setObject(1, entity.id());
+            ps.setLong(2, entity.todoistId());
+            ps.setObject(3, entity.profileId());
+            ps.setString(4, entity.content());
+            ps.setString(5, entity.description());
+            ps.setObject(6, entity.completedAt());
+            ps.setLong(7, entity.mp());
         });
     }
 }

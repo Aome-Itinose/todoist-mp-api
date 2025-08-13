@@ -2,16 +2,16 @@ package com.aome.todoist_mp_api.service;
 
 import com.aome.todoist_mp_api.converter.Converter;
 import com.aome.todoist_mp_api.exception.PreconditionFailure;
-import com.aome.todoist_mp_api.model.MpTransactionEntity;
-import com.aome.todoist_mp_api.model.RewardEntity;
-import com.aome.todoist_mp_api.model.TaskEntity;
-import com.aome.todoist_mp_api.model.TaskerEntity;
-import com.aome.todoist_mp_api.model.dto.GetTaskDto;
-import com.aome.todoist_mp_api.model.dto.ReduceRequest;
+import com.aome.todoist_mp_api.model.entity.MpTransactionEntity;
+import com.aome.todoist_mp_api.model.entity.ProfileEntity;
+import com.aome.todoist_mp_api.model.entity.RewardEntity;
+import com.aome.todoist_mp_api.model.entity.TaskEntity;
+import com.aome.todoist_mp_api.model.telegram_service.ReduceRequest;
+import com.aome.todoist_mp_api.model.todoist_service.GetTaskResponse;
 import com.aome.todoist_mp_api.store.service.MpTransactionService;
+import com.aome.todoist_mp_api.store.service.ProfileService;
 import com.aome.todoist_mp_api.store.service.RewardService;
 import com.aome.todoist_mp_api.store.service.TaskService;
-import com.aome.todoist_mp_api.store.service.TaskerService;
 import com.aome.todoist_mp_api.util.LoggableDebug;
 import com.aome.todoist_mp_api.util.SecurityContextHandler;
 import com.aome.todoist_mp_api.validation.Validator;
@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -30,7 +31,7 @@ import java.util.Optional;
 public class MpServiceFacadeImpl implements MpServiceFacade {
     private final ContextualApiService apiService;
 
-    private final TaskerService taskerService;
+    private final ProfileService profileService;
     private final TaskService taskService;
     private final MpTransactionService mpTransactionService;
     private final RewardService rewardService;
@@ -40,24 +41,24 @@ public class MpServiceFacadeImpl implements MpServiceFacade {
     @LoggableDebug
     @Transactional
     public int currentMp() {
-        TaskerEntity tasker = SecurityContextHandler.authenticatedUser();
-        Long taskerId = tasker.id();
+        ProfileEntity profile = SecurityContextHandler.authenticatedUser();
+        UUID profileId = profile.id();
 
         OffsetDateTime now = OffsetDateTime.now();
         OffsetDateTime lastUpdate = lastUpdatedOrDefault();
 
-        List<GetTaskDto> completedGetTaskDtos = apiService.getTasksByCompletion(lastUpdate, now);
-        List<TaskEntity> completedTasks = completedGetTaskDtos.stream()
-                .map(dto -> Converter.toEntity(dto, taskerId))
+        List<GetTaskResponse> completedGetTaskResponses = apiService.getTasksByCompletion(lastUpdate, now);
+        List<TaskEntity> completedTasks = completedGetTaskResponses.stream()
+                .map(dto -> Converter.toEntity(dto, profileId))
                 .toList();
 
-        var transaction = MpTransactionEntity.fromCompletedTasks(taskerId, completedTasks);
+        var transaction = MpTransactionEntity.fromCompletedTasks(profileId, completedTasks);
 
         taskService.saveAll(completedTasks);
         mpTransactionService.save(transaction);
-        tasker = taskerService.update(tasker.withAddMp(transaction.deltaMp()));
+        profile = profileService.update(profile.incrementMp(transaction.deltaMp()));
 
-        return tasker.mp();
+        return profile.mp();
     }
 
     @Override
@@ -65,45 +66,91 @@ public class MpServiceFacadeImpl implements MpServiceFacade {
     @Transactional
     public int reduceMp(ReduceRequest request) {
         validator.validate(request);
-        TaskerEntity tasker = SecurityContextHandler.authenticatedUser();
-        Long taskerId = tasker.id();
 
-        if (tasker.mp() < request.amount()) {
-            throw PreconditionFailure.invalidMpReduceAmount("Not enough MP to reduce");
-        }
+        var rewardToCreate = new RewardToCreate(request, "REDUCE")
+                .throwIfContentIsEmpty();
 
-        int amount = -request.amount();
 
-        var transaction = new MpTransactionEntity(
-                taskerId,
-                amount,
-                OffsetDateTime.now(),
-                -1
-        );
-        var reward = new RewardEntity(
-                taskerId,
-                request.amount(),
-                request.reason(),
-                "REWARD"
-        );
+        var profile = profileService.findById(SecurityContextHandler.authenticatedUser().id());
+        rewardToCreate = rewardToCreate.withProfile(profile)
+                .throwIfInsufficientMp();
 
-        mpTransactionService.save(transaction);
-        rewardService.save(reward);
-        tasker = taskerService.update(tasker.withAddMp(amount));
+        mpTransactionService.save(rewardToCreate.toTransaction());
+        rewardService.save(rewardToCreate.toEntity());
 
-        return tasker.mp();
+        profile = profileService.updateMp(profile.id(), profile.mp() + rewardToCreate.amount());
+
+        return profile.mp();
     }
 
     @LoggableDebug
     private OffsetDateTime lastUpdatedOrDefault() {
         OffsetDateTime offsetDateTime;
         Optional<MpTransactionEntity> maybeLastEntity = mpTransactionService.safeFindLastCreated();
-        if (maybeLastEntity.isPresent()) {
-            offsetDateTime = maybeLastEntity.get().timestamp();
-        } else {
-            // Default to 30 days ago if no last update found
-            offsetDateTime = OffsetDateTime.now().minusDays(30);
-        }
+        // Default to 30 days ago if no last update found
+        offsetDateTime = maybeLastEntity.map(MpTransactionEntity::timestamp).orElseGet(() -> OffsetDateTime.now().minusDays(30));
         return offsetDateTime.plusSeconds(1);
+    }
+
+    record RewardToCreate(
+            UUID profileId,
+            int amount,
+            String content,
+            String type,
+            ProfileEntity profile
+    ) {
+        public RewardToCreate(
+                ReduceRequest reduceRequest,
+                String type
+        ) {
+            this(
+                    SecurityContextHandler.authenticatedUser().id(),
+                    Math.negateExact(reduceRequest.amount()),
+                    reduceRequest.reason(),
+                    type,
+                    null
+            );
+        }
+
+        public RewardToCreate withProfile(ProfileEntity profile) {
+            return new RewardToCreate(
+                    profileId,
+                    amount,
+                    content,
+                    type,
+                    profile
+            );
+        }
+
+        public RewardToCreate throwIfInsufficientMp() {
+            if (profile.mp() < amount) {
+                throw PreconditionFailure.invalidMpReduceAmount("Not enough MP to reduce");
+            }
+            return this;
+        }
+
+        public RewardToCreate throwIfContentIsEmpty() {
+            if (content.isBlank()) {
+                throw PreconditionFailure.invalidContent("MP reduction reason must not be null or blank.");
+            }
+            return this;
+        }
+
+        public RewardEntity toEntity() {
+            return new RewardEntity(
+                    profileId,
+                    amount,
+                    content,
+                    type
+            );
+        }
+
+        public MpTransactionEntity toTransaction() {
+            return new MpTransactionEntity(
+                    profileId,
+                    amount,
+                    -1
+            );
+        }
     }
 }

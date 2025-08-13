@@ -1,6 +1,6 @@
 package com.aome.todoist_mp_api.store.service;
 
-import com.aome.todoist_mp_api.model.MpTransactionEntity;
+import com.aome.todoist_mp_api.model.entity.MpTransactionEntity;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;

@@ -1,9 +1,9 @@
 package com.aome.todoist_mp_api.web;
 
-import com.aome.todoist_mp_api.model.dto.GetTaskDto;
-import com.aome.todoist_mp_api.model.dto.GetTaskListDto;
-import com.aome.todoist_mp_api.model.dto.GetUserDto;
-import com.aome.todoist_mp_api.model.dto.UpdateTaskDto;
+import com.aome.todoist_mp_api.model.todoist_service.GetTaskResponse;
+import com.aome.todoist_mp_api.model.todoist_service.GetTaskListDto;
+import com.aome.todoist_mp_api.model.todoist_service.GetUserResponse;
+import com.aome.todoist_mp_api.model.todoist_service.UpdateTaskRequest;
 import com.aome.todoist_mp_api.util.LoggableDebug;
 import com.aome.todoist_mp_api.util.Urls;
 import lombok.AllArgsConstructor;
@@ -27,8 +27,8 @@ public class ApiClientServiceImpl implements ApiClientService {
 
     @Override
     @LoggableDebug
-    public GetUserDto loadUser() {
-        ResponseEntity<GetUserDto> response = restTemplate.exchange(
+    public GetUserResponse loadUser() {
+        ResponseEntity<GetUserResponse> response = restTemplate.exchange(
                 Urls.USER, HttpMethod.GET, null, new ParameterizedTypeReference<>() {});
 
         return response.getBody();
@@ -53,9 +53,9 @@ public class ApiClientServiceImpl implements ApiClientService {
 
     @Override
     @LoggableDebug
-    public List<GetTaskDto> loadByLabel(String label) {
+    public List<GetTaskResponse> loadByLabel(String label) {
         String url = Urls.TASKS_BY_LABEL.formatted(label);
-        ResponseEntity<List<GetTaskDto>> response = restTemplate.exchange(
+        ResponseEntity<List<GetTaskResponse>> response = restTemplate.exchange(
                 url,
                 HttpMethod.GET,
                 null,
@@ -66,12 +66,12 @@ public class ApiClientServiceImpl implements ApiClientService {
 
     @Override
     @LoggableDebug
-    public GetTaskDto updateTask(String taskId, UpdateTaskDto updateTaskDto) {
+    public GetTaskResponse updateTask(String taskId, UpdateTaskRequest updateTaskRequest) {
         String url = Urls.UPDATE_TASK.formatted(taskId);
-        ResponseEntity<GetTaskDto> response = restTemplate.postForEntity(
+        ResponseEntity<GetTaskResponse> response = restTemplate.postForEntity(
                 url,
-                updateTaskDto,
-                GetTaskDto.class
+                updateTaskRequest,
+                GetTaskResponse.class
         );
         return response.getBody();
     }

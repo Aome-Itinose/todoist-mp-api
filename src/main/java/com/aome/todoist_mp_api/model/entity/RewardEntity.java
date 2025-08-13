@@ -1,22 +1,24 @@
-package com.aome.todoist_mp_api.model;
+package com.aome.todoist_mp_api.model.entity;
 
 import lombok.With;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.OffsetDateTime;
 import java.util.Objects;
+import java.util.UUID;
 
 @With
 public record RewardEntity(
-    Long id,
-    @NotNull Long userId,
+    @NotNull UUID id,
+    @NotNull UUID profileId,
     @NotNull Integer amount,
     @NotNull String content,
     @NotNull String type,
     @NotNull OffsetDateTime timestamp
 ) {
     public RewardEntity {
-        Objects.requireNonNull(userId);
+        Objects.requireNonNull(id, "ID cannot be null");
+        Objects.requireNonNull(profileId);
         Objects.requireNonNull(amount);
         Objects.requireNonNull(content);
         Objects.requireNonNull(type);
@@ -24,11 +26,11 @@ public record RewardEntity(
     }
 
     public RewardEntity(
-            @NotNull Long userId,
+            @NotNull UUID profileId,
             @NotNull Integer amount,
             @NotNull String content,
             @NotNull String type
     ) {
-        this(null, userId, amount, content, type, OffsetDateTime.now());
+        this(UUID.randomUUID(), profileId, amount, content, type, OffsetDateTime.now());
     }
 }

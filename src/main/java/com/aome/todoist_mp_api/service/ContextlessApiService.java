@@ -1,15 +1,15 @@
 package com.aome.todoist_mp_api.service;
 
-import com.aome.todoist_mp_api.model.dto.GetTaskDto;
-import com.aome.todoist_mp_api.model.dto.GetUserDto;
-import com.aome.todoist_mp_api.model.dto.UpdateTaskDto;
+import com.aome.todoist_mp_api.model.todoist_service.GetTaskResponse;
+import com.aome.todoist_mp_api.model.todoist_service.GetUserResponse;
+import com.aome.todoist_mp_api.model.todoist_service.UpdateTaskRequest;
 
 import java.util.List;
 
 public interface ContextlessApiService {
-    GetUserDto getUser(String bearerToken);
+    GetUserResponse getUser(String bearerToken);
 
-    List<GetTaskDto> getTaskByLabel(String bearerToken, String label);
+    List<GetTaskResponse> getTaskByLabel(String bearerToken, String label);
 
-    void updateTasks(String bearerToken, List<UpdateTaskDto> tasks);
+    void updateTasks(String bearerToken, List<UpdateTaskRequest> tasks);
 }

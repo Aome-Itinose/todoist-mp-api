@@ -1,4 +1,4 @@
-package com.aome.todoist_mp_api.model.dto;
+package com.aome.todoist_mp_api.model.todoist_service;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -9,7 +9,7 @@ import java.time.OffsetDateTime;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @With
-public record GetTaskDto(
+public record GetTaskResponse(
         @JsonProperty("id")
         @NotNull Long id,
 
@@ -26,5 +26,5 @@ public record GetTaskDto(
         OffsetDateTime completedAt,
 
         @JsonProperty("due")
-        TaskDueDto due
+        TaskDueResponse due
 ) {}

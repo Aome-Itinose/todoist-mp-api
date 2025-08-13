@@ -1,8 +1,8 @@
 package com.aome.todoist_mp_api.config;
 
-import com.aome.todoist_mp_api.exception.TaskerNotFoundException;
-import com.aome.todoist_mp_api.model.TaskerEntity;
-import com.aome.todoist_mp_api.store.service.TaskerService;
+import com.aome.todoist_mp_api.exception.ProfileNotFoundException;
+import com.aome.todoist_mp_api.model.entity.ProfileEntity;
+import com.aome.todoist_mp_api.store.service.ProfileService;
 import com.aome.todoist_mp_api.util.JwtUtil;
 import com.aome.todoist_mp_api.util.SecurityContextHandler;
 import com.auth0.jwt.exceptions.JWTVerificationException;
@@ -23,8 +23,8 @@ import java.io.IOException;
 @Component
 @RequiredArgsConstructor
 public class AuthenticationFilter extends OncePerRequestFilter {
-    private final TaskerService taskerService;
     private final JwtUtil jwtUtil;
+    private final ProfileService profileService;
 
     @Override
     protected void doFilterInternal(
@@ -40,7 +40,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
             try {
                 String telegramToken = jwtUtil.validateAndGetChatId(bearerToken);
                 authenticateTasker(telegramToken);
-            } catch (TaskerNotFoundException e) {
+            } catch (ProfileNotFoundException e) {
                 log.warn("Tasker not found for token {}", bearerToken);
             } catch (JWTVerificationException e) {
                 log.warn("JWT verification failed for token {}: {}", maskToken(bearerToken), e.getMessage());
@@ -63,8 +63,8 @@ public class AuthenticationFilter extends OncePerRequestFilter {
     }
 
     private void authenticateTasker(String telegramToken) {
-        TaskerEntity tasker = taskerService.findByTelegramToken(telegramToken);
-        SecurityContextHandler.setAuthentication(tasker);
+        ProfileEntity profile = profileService.findByTelegramToken(telegramToken);
+        SecurityContextHandler.setAuthentication(profile);
     }
 
     private String maskToken(String token) {

@@ -2,16 +2,17 @@ package com.aome.todoist_mp_api.scheduling;
 
 import com.aome.todoist_mp_api.converter.Converter;
 import com.aome.todoist_mp_api.converter.TaskParameterParser;
-import com.aome.todoist_mp_api.model.TaskerEntity;
-import com.aome.todoist_mp_api.model.dto.GetTaskDto;
+import com.aome.todoist_mp_api.model.todoist_service.GetTaskResponse;
+import com.aome.todoist_mp_api.model.entity.ProfileEntity;
 import com.aome.todoist_mp_api.service.ContextlessApiService;
-import com.aome.todoist_mp_api.store.service.TaskerService;
+import com.aome.todoist_mp_api.store.service.ProfileService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 public class DeadlineAwareTaskPostponeJob extends RunnableJob {
@@ -20,21 +21,21 @@ public class DeadlineAwareTaskPostponeJob extends RunnableJob {
     private static final String NAME = "DeadlineAwareTaskPostponeJob";
 
     @Getter
-    private final Long taskerId;
+    private final UUID taskerId;
 
-    private final TaskerService taskerService;
+    private final ProfileService profileService;
     private final ContextlessApiService apiService;
 
     @Override
     public void execute() {
         status = Status.RUNNING;
 
-        TaskerEntity tasker = taskerService.findById(taskerId);
-        String todoistToken = tasker.todoistToken();
+        ProfileEntity profile = profileService.findById(taskerId);
+        String todoistToken = profile.todoistToken();
 
-        List<GetTaskDto> tasks = apiService.getTaskByLabel(todoistToken, LABEL);
+        List<GetTaskResponse> tasks = apiService.getTaskByLabel(todoistToken, LABEL);
 
-        List<GetTaskDto> filteredTasks = tasks.stream()
+        List<GetTaskResponse> filteredTasks = tasks.stream()
                 .filter(taskDto -> {
                     LocalDate deadline = new TaskParameterParser(taskDto.content(), taskDto.description()).getDeadline();
 

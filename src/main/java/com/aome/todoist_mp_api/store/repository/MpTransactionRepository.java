@@ -1,6 +1,6 @@
 package com.aome.todoist_mp_api.store.repository;
 
-import com.aome.todoist_mp_api.model.MpTransactionEntity;
+import com.aome.todoist_mp_api.model.entity.MpTransactionEntity;
 import org.jetbrains.annotations.NotNull;
 
 public interface MpTransactionRepository {

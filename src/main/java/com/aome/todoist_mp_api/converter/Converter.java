@@ -1,16 +1,17 @@
 package com.aome.todoist_mp_api.converter;
 
-import com.aome.todoist_mp_api.model.TaskEntity;
-import com.aome.todoist_mp_api.model.dto.GetTaskDto;
-import com.aome.todoist_mp_api.model.dto.UpdateTaskDto;
+import com.aome.todoist_mp_api.model.entity.TaskEntity;
+import com.aome.todoist_mp_api.model.todoist_service.GetTaskResponse;
+import com.aome.todoist_mp_api.model.todoist_service.UpdateTaskRequest;
 
 import java.time.format.DateTimeFormatter;
+import java.util.UUID;
 
 public class Converter {
-    public static TaskEntity toEntity(GetTaskDto dto, Long userId) {
+    public static TaskEntity toEntity(GetTaskResponse dto, UUID profileId) {
         return new TaskEntity(
                 dto.id(),
-                userId,
+                profileId,
                 dto.content(),
                 dto.description(),
                 dto.completedAt(),
@@ -18,8 +19,8 @@ public class Converter {
         );
     }
 
-    public static UpdateTaskDto toUpdateDto(GetTaskDto e) {
-        return new UpdateTaskDto(
+    public static UpdateTaskRequest toUpdateDto(GetTaskResponse e) {
+        return new UpdateTaskRequest(
                 e.id(),
                 e.due().getDateTime() == null ? null : e.due().getDateTime().format(DateTimeFormatter.ISO_INSTANT),
                 e.due().getDate() == null ? null : e.due().getDate().toString()
